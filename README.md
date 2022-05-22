@@ -1,62 +1,102 @@
 # EasyEngineLaravel
 How To Install Laravel On EasyEngine
 
-*Note, All the 'example.com' and 'examplecom' must be change to your domain name!
+There is not a lot of tutorial on how to setup/install laravel app on a server running EasyEngine
+<br>
+So here I made one :)
+
+*Side Note, All the 'example.com' and 'examplecom' must be change to your domain name!
 
 ## 1 Install EE
 ```shell
 wget -qO ee rt.cx/ee4 && sudo bash ee
 ```
 
-## 2 Add Necessary Packages
-```shell
-apt-get install php8.0-mbstring php8.0-xml php8.0-dom
-```
-*Might change php version depending on the update
-
-## 3 Install Latest Composer
-```shell
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php -r "if (hash_file('sha384', 'composer-setup.php') === '55ce33d7678c5a611085589f1f3ddf8b3c52d662cd01d4ba75c0ee0459970c2200a51f492d557530c71c15d8dba01eae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-php composer-setup.php
-php -r "unlink('composer-setup.php');"
-mv composer.phar /usr/local/bin/composer
-mv composer.phar /usr/bin/composer
-```
-
-## 4 Add Our Site 
+## 2 Add Our Site 
 ```shell
 ee site create example.com --type=php --ssl=le --with-db --php=8.0
 ```
 This command will add "example.com" with database, ssl, and PHP version 8.0
+<br>
+Don't forget save the site info once the site created
 
-## 5 CD To Our Domain Directory
+## 3 Enter Shell
 ```shell
-cd /var/lib/docker/volumes/examplecom_htdocs/_data/htdocs
+ee shell example.com --user=root
+```
+*We need to enter shell to run wp-cli, composer etc.
+<br>
+We will be in the shell from step 4 -> 8
+
+## 4 Install Laravel #Do This Once
+```shell
+composer global require laravel/installer << Just Do This Once When We Fresh Install EasyEngine, Don't Run For Your Second Or More Project!, Go Straight To step 6
+```
+*Just Do This Once When We Fresh Install EasyEngine
+<br>
+Don't Run For Your Second Or More Project! You Can Go Straight To step 6
+
+## 5 Configure $PATH for composer
+```shell
+vim ~/.bash_profile 
+export PATH=~/.composer/vendor/bin:$PATH << Paste This
+source ~/.bash_profile
+```
+*Just Do This Once When We Fresh Install Laravel
+
+## 6 Add Laravel App
+```shell
+laravel new example-app
+cd example-app
+```
+*This will Install Laravel App Called "example-app"
+
+## 7 Configure .env
+```shell
+vim .env
+```
+Here we must configure our .env file
+<br>
+All the required data you can get from running ```shell ee site info example.com```
+
+```env
+APP_URL=https://example.com
+
+...
+
+DB_CONNECTION=mysql
+DB_HOST=global-db
+DB_PORT=3306
+DB_DATABASE=example_com
+DB_USERNAME=example.com-QWERTY
+DB_PASSWORD=qafNkpWoCUg0
 ```
 
-## 6 Install Laravel
+## 8 Migrate Database
 ```shell
-composer create-project laravel/laravel example-app
+php artisan migrate:fresh
+exit
 ```
+We Exit Shell After Migrate
 
-## 7 Configure Laravel
-```shell
-chown -R www-data.www-data /var/lib/docker/volumes/examplecom_htdocs/_data/htdocs/lara/storage
-chown -R www-data.www-data /var/lib/docker/volumes/examplecom_htdocs/_data/htdocs/lara/bootstrap/cache
-```
-
-## 8 Edit Nginx Root Dir
+## 9 Edit Nginx Root Dir
+Make sure we exit from the shell
 ```shell
 cd /var/lib/docker/volumes/exampleme_config_nginx/_data/conf.d
 nano main.conf
 
 Here we must edit "root /var/www/htdocs;" To "root /var/www/htdocs/example-app/public;"
 (example-app) is the laravel app name we created earlier in Step 6
-Save
+Save The File
 ```
 
-## 9 Reload
+## 9 Chown
+```shell
+chown -R www-data.www-data /var/lib/docker/volumes/eelaramiguelemmarame_htdocs/_data/htdocs/example-app/storage
+chown -R www-data.www-data /var/lib/docker/volumes/eelaramiguelemmarame_htdocs/_data/htdocs/example-app/bootstrap/cache
+```
+
+## 10 Reload
 ```shell
 ee site reload example.com
 ```
@@ -64,10 +104,3 @@ ee site reload example.com
 # Done
 
 You can then proceed building your web app like usual!
-
-You can also edit .env file based on your site info
-
-## 8 Get your site info with
-```shell
-ee site info example.com
-```
