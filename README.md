@@ -90,13 +90,13 @@ Here we must edit "root /var/www/htdocs;" To "root /var/www/htdocs/example-app/p
 Save The File
 ```
 
-## 9 Chown
+## 10 Chown
 ```shell
 chown -R www-data.www-data /var/lib/docker/volumes/eelaramiguelemmarame_htdocs/_data/htdocs/example-app/storage
 chown -R www-data.www-data /var/lib/docker/volumes/eelaramiguelemmarame_htdocs/_data/htdocs/example-app/bootstrap/cache
 ```
 
-## 10 Reload
+## 11 Reload
 ```shell
 ee site reload example.com
 ```
