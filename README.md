@@ -82,7 +82,7 @@ We Exit Shell After Migrate
 ## 9 Edit Nginx Root Dir
 Make sure we exit from the shell
 ```shell
-cd /var/lib/docker/volumes/exampleme_config_nginx/_data/conf.d
+cd /var/lib/docker/volumes/examplecom_config_nginx/_data/conf.d
 nano main.conf
 
 Here we must edit "root /var/www/htdocs;" To "root /var/www/htdocs/example-app/public;"
@@ -92,8 +92,8 @@ Save The File
 
 ## 10 Chown
 ```shell
-chown -R www-data.www-data /var/lib/docker/volumes/eelaramiguelemmarame_htdocs/_data/htdocs/example-app/storage
-chown -R www-data.www-data /var/lib/docker/volumes/eelaramiguelemmarame_htdocs/_data/htdocs/example-app/bootstrap/cache
+chown -R www-data.www-data /var/lib/docker/volumes/examplecom_htdocs/_data/htdocs/example-app/storage
+chown -R www-data.www-data /var/lib/docker/volumes/examplecom_htdocs/_data/htdocs/example-app/bootstrap/cache
 ```
 
 ## 11 Reload
